@@ -1,0 +1,77 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "version": "8.2.4",
+    "require": {
+        "php": "^8.2.2",
+        "akaunting/laravel-firewall": "*",
+        "diglactic/laravel-breadcrumbs": "*",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^12",
+        "laravel/sanctum": "*",
+        "laravel/socialite": "*",
+        "laravel/tinker": "*",
+        "livewire/livewire": "*",
+        "rappasoft/laravel-authentication-log": "*",
+        "spatie/laravel-activitylog": "*",
+        "spatie/laravel-permission": "^6.21",
+        "torann/geoip": "^3.0",
+        "yajra/laravel-datatables": "^12.0",
+        "yajra/laravel-datatables-oracle": "*"
+    },
+    "require-dev": {
+        "fakerphp/faker": "*",
+        "laravel/breeze": "*",
+        "laravel/pint": "*",
+        "laravel/sail": "*",
+        "mockery/mockery": "*",
+        "nunomaduro/collision": "*",
+        "phpunit/phpunit": "*",
+        "spatie/laravel-ignition": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi",
+            "@php artisan vendor:publish --force --tag=livewire:assets --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
