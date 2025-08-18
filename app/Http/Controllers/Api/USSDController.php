@@ -85,7 +85,7 @@ $profile = $this->profileService->checkProfile($this->_msisdn);
 */
 
 //$mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
-$mifos_result =  ['success'=>true,'profile'=>['name'=>'george']];
+//$mifos_result =  ['success'=>true,'profile'=>['name'=>'george']];
 if(!$mifos_result)
 {
   $this->displayText = "Welcome to Nobel Lending.\n 1. Register\n2. View Terms and Conditions \n3 Know more";

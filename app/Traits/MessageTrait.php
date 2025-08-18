@@ -9,7 +9,7 @@ trait MessageTrait
     {
 	  //  return;
         try{
-            Log::channel('pam_logs')->info("Send Message request |$request_id,$message,$msisdn,$source");       
+            Log::channel('ussd_log')->info("Send Message request |$request_id,$message,$msisdn,$source");       
         $messageModel= Messages::create(
             [
             'source' => $source,
@@ -21,14 +21,16 @@ trait MessageTrait
 
        if( $messageModel)
         {
-            //Log::channel('pam_logs')->info("Send Message request |$request_id,$message,$msisdn,$source | created message ". $message->id);
-            \App\Jobs\ProcessMessages::dispatch(['message_id'=>$messageModel->id,"message"=>$message,"msisdn"=>$msisdn]);
+
+            Log::channel('ussd_log')->info("Send Message request Ssssssssss |".$messageModel->id);       
+            //Log::channel('ussd_log')->info("Send Message request |$request_id,$message,$msisdn,$source | created message ". $message->id);
+            \App\Jobs\ProcessMessages::dispatchSync(['message_id'=>$messageModel->id,"message"=>$message,"msisdn"=>$msisdn]);
             return response()->json([ "message" => "Message queued for sending . ID".$messageModel->id,"status" => true, "code" => 200,]);
         }
   return response()->json([ "message" => "cannot create message","status" => false, "code" => 422,],422);
       
     } catch (Throwable $th) {
-       Log::channel('pam_logs')->info("Send Message request |$request_id,$message,$msisdn,$source XXXERRORXXX|status to failed| Error Message => ".$th->getMessage());
+       Log::channel('ussd_log')->info("Send Message request |$request_id,$message,$msisdn,$source XXXERRORXXX|status to failed| Error Message => ".$th->getMessage());
       return response()->json([ "message" => "cannot create message".$th->getMessage(),"status" => false, "code" => 422,],422);
     }
         
