@@ -1,10 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Withdraws;
-use App\Models\Deposits;
-use App\Models\GameSessions;
-use App\Models\PlayerAccounts;
+use App\Models\AccountSignups;
+use App\Models\UssdSessions;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;

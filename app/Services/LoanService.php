@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use App\Traits\MessageTrait;
 
 class LoanService
 {
+    use MessageTrait;
+
     protected $baseUrl;
     protected $username;
     protected $password;
@@ -97,13 +100,33 @@ return ['success' => true, 'message' => 'loan products exist' ,"loan_products"=>
         ->post("$this->baseUrl/loans", $payload);
 
         if ($response->successful()) {
+            $message = message_template('loan-application-success', ['amount'=>$loan_amount,"payable" =>$totalPayable,"due_date"=>""
+        ]);
+        $this->SendMessage($profile_added->id,$profile['mobileNo'] ,$message,"LOAN-REQUEST");
+
             return ['success' => true, 'data' => $response->json()];
         } else {
+            $message = message_template('loan-application-fail', ['amount'=>$loan_amount,"payable" =>$totalPayable,"due_date"=>""
+        ]);
+        $this->SendMessage($profile_added->id,$profile['mobileNo'] ,$message,"LOAN-REQUEST");
+
             return ['success' => false, 'error' => $response->json()];
         }
 
         die("afda");
         ///we apply loan now 
+    }
+
+
+    public function payLoan($loan_amount,$msisdn )
+    {
+
+        $message = message_template('loan-payment', ['amount'=>$loan_amount,
+    ]);
+    $this->SendMessage(0,$msisdn ,$message,"LOAN-PAYMENT");
+
+        
+     
     }
 
     private function generatePin($length = 4)

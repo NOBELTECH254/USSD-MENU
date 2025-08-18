@@ -22,7 +22,7 @@ trait MessageTrait
        if( $messageModel)
         {
             //Log::channel('pam_logs')->info("Send Message request |$request_id,$message,$msisdn,$source | created message ". $message->id);
-           // \App\Jobs\ProcessMessages::dispatch(['message_id'=>$messageModel->id,"message"=>$message,"msisdn"=>$msisdn]);
+            \App\Jobs\ProcessMessages::dispatch(['message_id'=>$messageModel->id,"message"=>$message,"msisdn"=>$msisdn]);
             return response()->json([ "message" => "Message queued for sending . ID".$messageModel->id,"status" => true, "code" => 200,]);
         }
   return response()->json([ "message" => "cannot create message","status" => false, "code" => 422,],422);

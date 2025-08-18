@@ -49,14 +49,14 @@
                     <div class="d-flex align-items-center flex-wrap w-100">
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
-                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Deposits</a>
-                            <div class="text-muted fw-bold fs-5" id ="deposits_count_today">0 </div> 
+                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">ussd dials</a>
+                            <div class="text-muted fw-bold fs-5" id ="ussd_count_today">0 </div> 
                         </div>
                         <!--end::Title-->
 
                         <!--begin::Label-->
                         <div class="d-flex align-items-center ">
-                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="deposits_today">0</div> 
+                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="ussd_today">0</div> 
                             
                                                     </div>
                         <!--end::Label-->
@@ -78,15 +78,15 @@
                     <div class="d-flex align-items-center flex-wrap w-100">
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
-                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Withdraws</a>
-                            <div class="text-muted fw-bold fs-5" id ="withdraws_count_today">0 </div> 
+                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Registrations</a>
+                            <div class="text-muted fw-bold fs-5" id ="registrations_count_today">0 </div> 
 
                         </div>
                         <!--end::Title-->
 
                         <!--begin::Label-->
                         <div class="d-flex align-items-center">
-                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="withdraws_today" >0</div>
+                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="registrations_today" >0</div>
                          </div>
                         <!--end::Label-->
                     </div>
@@ -109,15 +109,15 @@
                     <div class="d-flex align-items-center flex-wrap w-100">
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
-                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stakes </a>
-                            <div class="text-muted fw-bold fs-5" id ="stakes_count_today">0 </div> 
+                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">loans </a>
+                            <div class="text-muted fw-bold fs-5" id ="loans_count_today">0 </div> 
 
                         </div>
                         <!--end::Title-->
 
                         <!--begin::Label-->
                         <div class="d-flex align-items-center">
-                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stakes_today">0</div>  
+                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="loans_today">0</div>  
                                                     </div>
                         <!--end::Label-->
                     </div>
@@ -127,35 +127,7 @@
 
 
                 <!--end::Item-->
-                            <!--begin::Item-->
-                <div class="d-flex align-items-center ">
-                    <!--begin::Symbol-->
-                    <div class="symbol symbol-45px w-40px me-5">
-                        <span class="symbol-label bg-lighten">                             
-                            <i class="ki-duotone ki-document fs-1"><span class="path1"></span><span class="path2"></span></i>                          
-                        </span>
-                    </div>
-                    <!--end::Symbol-->
-
-                    <!--begin::Description-->
-                    <div class="d-flex align-items-center flex-wrap w-100">
-                        <!--begin::Title-->
-                        <div class="mb-1 pe-3 flex-grow-1">
-                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stakes Wins</a>
-                            <div class="text-muted fw-bold fs-5" id ="stakes_wins_count_today">0 </div> 
-
-                        </div>
-                        <!--end::Title-->
-
-                        <!--begin::Label-->
-                        <div class="d-flex align-items-center">
-                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stake_wins_today">0</div>   
-                                                    </div>
-                        <!--end::Label-->
-                    </div>
-                    <!--end::Description-->                     
-                </div>
-                <!--end::Item-->
+                   
 
                
 
@@ -174,15 +146,15 @@
                     <div class="d-flex align-items-center flex-wrap w-100">
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
-                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stake Loses</a>
-                            <div class="text-muted fw-bold fs-5" id ="stake_loss_count_today">0 </div> 
+                            <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Payments </a>
+                            <div class="text-muted fw-bold fs-5" id ="payments_count_today">0 </div> 
 
                         </div>
                         <!--end::Title-->
 
                         <!--begin::Label-->
                         <div class="d-flex align-items-center">
-                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stake_loss_today">0</div>   
+                            <div class="fw-bold fs-1 text-gray-800 pe-1" id ="payments_today">0</div>   
                                                     </div>
                         <!--end::Label-->
                     </div>
@@ -241,14 +213,14 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Deposits</a>
-                                    <div class="text-muted fw-bold fs-5" id ="deposits_count_week">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">ussd</a>
+                                    <div class="text-muted fw-bold fs-5" id ="ussd_count_week">0 </div> 
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center ">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="deposits_week">0</div> 
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="ussd_week">0</div> 
         
                                     
                                                             </div>
@@ -271,15 +243,15 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Withdraws</a>
-                                    <div class="text-muted fw-bold fs-5" id ="withdraws_count_week">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">registrations</a>
+                                    <div class="text-muted fw-bold fs-5" id ="registrations_count_week">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="withdraws_week" >0</div>
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="registrations_week" >0</div>
                                  </div>
                                 <!--end::Label-->
                             </div>
@@ -300,50 +272,22 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stakes </a>
-                                    <div class="text-muted fw-bold fs-5" id ="stakes_count_week">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">loans </a>
+                                    <div class="text-muted fw-bold fs-5" id ="loans_count_week">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stakes_week">0</div>  
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="loans_week">0</div>  
                                                             </div>
                                 <!--end::Label-->
                             </div>
                             <!--end::Description-->                     
                         </div>
                         <!--end::Item-->
-                                    <!--begin::Item-->
-                        <div class="d-flex align-items-center ">
-                            <!--begin::Symbol-->
-                            <div class="symbol symbol-45px w-40px me-5">
-                                <span class="symbol-label bg-lighten">                             
-                                    <i class="ki-duotone ki-document fs-1"><span class="path1"></span><span class="path2"></span></i>                          
-                                </span>
-                            </div>
-                            <!--end::Symbol-->
-        
-                            <!--begin::Description-->
-                            <div class="d-flex align-items-center flex-wrap w-100">
-                                <!--begin::Title-->
-                                <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stakes Wins</a>
-                                    <div class="text-muted fw-bold fs-5" id ="stakes_wins_count_week">0 </div> 
-        
-                                </div>
-                                <!--end::Title-->
-        
-                                <!--begin::Label-->
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stake_wins_week">0</div>   
-                                                            </div>
-                                <!--end::Label-->
-                            </div>
-                            <!--end::Description-->                     
-                        </div>
-                        <!--end::Item-->
+
                                   <!--begin::Item-->
                                   <div class="d-flex align-items-center ">
                             <!--begin::Symbol-->
@@ -358,15 +302,15 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stake Loses</a>
-                                    <div class="text-muted fw-bold fs-5" id ="stake_loss_count_week">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Payments</a>
+                                    <div class="text-muted fw-bold fs-5" id ="payments_count_week">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stake_loss_week">0</div>   
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="payments_week">0</div>   
                                                             </div>
                                 <!--end::Label-->
                             </div>
@@ -425,14 +369,14 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Deposits</a>
-                                    <div class="text-muted fw-bold fs-5" id ="deposits_count_month">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">ussd</a>
+                                    <div class="text-muted fw-bold fs-5" id ="ussd_count_month">0 </div> 
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center ">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="deposits_month">0</div> 
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="ussd_month">0</div> 
         
                                     
                                                             </div>
@@ -455,15 +399,15 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Withdraws</a>
-                                    <div class="text-muted fw-bold fs-5" id ="withdraws_count_month">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">registrations</a>
+                                    <div class="text-muted fw-bold fs-5" id ="registrations_count_month">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="withdraws_month" >0</div>
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="registrations_month" >0</div>
                                  </div>
                                 <!--end::Label-->
                             </div>
@@ -484,50 +428,22 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stakes </a>
-                                    <div class="text-muted fw-bold fs-5" id ="stakes_count_month">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">loans </a>
+                                    <div class="text-muted fw-bold fs-5" id ="loans_count_month">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stakes_month">0</div>  
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="loans_month">0</div>  
                                                             </div>
                                 <!--end::Label-->
                             </div>
                             <!--end::Description-->                     
                         </div>
                         <!--end::Item-->
-                                    <!--begin::Item-->
-                        <div class="d-flex align-items-center ">
-                            <!--begin::Symbol-->
-                            <div class="symbol symbol-45px w-40px me-5">
-                                <span class="symbol-label bg-lighten">                             
-                                    <i class="ki-duotone ki-document fs-1"><span class="path1"></span><span class="path2"></span></i>                          
-                                </span>
-                            </div>
-                            <!--end::Symbol-->
-        
-                            <!--begin::Description-->
-                            <div class="d-flex align-items-center flex-wrap w-100">
-                                <!--begin::Title-->
-                                <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stakes Wins</a>
-                                    <div class="text-muted fw-bold fs-5" id ="stakes_wins_count_month">0 </div> 
-        
-                                </div>
-                                <!--end::Title-->
-        
-                                <!--begin::Label-->
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stake_wins_month">0</div>   
-                                                            </div>
-                                <!--end::Label-->
-                            </div>
-                            <!--end::Description-->                     
-                        </div>
-                        <!--end::Item-->
+                    
                                   <!--begin::Item-->
                                   <div class="d-flex align-items-center ">
                             <!--begin::Symbol-->
@@ -542,15 +458,15 @@
                             <div class="d-flex align-items-center flex-wrap w-100">
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
-                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Stake Loses</a>
-                                    <div class="text-muted fw-bold fs-5" id ="stake_loss_count_month">0 </div> 
+                                    <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Payments</a>
+                                    <div class="text-muted fw-bold fs-5" id ="payments_count_month">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
         
                                 <!--begin::Label-->
                                 <div class="d-flex align-items-center">
-                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="stake_loss_month">0</div>   
+                                    <div class="fw-bold fs-1 text-gray-800 pe-1" id ="payments_month">0</div>   
                                                             </div>
                                 <!--end::Label-->
                             </div>
@@ -647,7 +563,7 @@
                                 }
                             },
                             series: [{
-                                name: 'Stakes',
+                                name: 'loans',
                                 data: data.map(item => parseInt(item.bet_amount))
                             }, {
                                 name: 'Wins',
@@ -696,18 +612,18 @@
                     if (response.success) {
                         var dashboard_tiles = response.dashboard;
                         $("#balance_today").text(dashboard_tiles.balance_today);
-                        $("#deposits_today").text(dashboard_tiles.deposits_today);
-                        $("#deposits_count_today").text(dashboard_tiles.deposits_count_today);
-                        $("#withdraws_today").text(dashboard_tiles.withdraws_today);
+                        $("#ussd_today").text(dashboard_tiles.ussd_today);
+                        $("#ussd_count_today").text(dashboard_tiles.ussd_count_today);
+                        $("#registrations_today").text(dashboard_tiles.registrations_today);
 
 
-                        $("#withdraws_count_today").text(dashboard_tiles.withdraws_count_today);
-                        $("#stakes_today").text(dashboard_tiles.stakes_today);
-                        $("#stakes_count_today").text(dashboard_tiles.stakes_count_today);
-                        $("#stakes_wins_count_today").text(dashboard_tiles.stakes_wins_count_today);
+                        $("#registrations_count_today").text(dashboard_tiles.registrations_count_today);
+                        $("#loans_today").text(dashboard_tiles.loans_today);
+                        $("#loans_count_today").text(dashboard_tiles.loans_count_today);
+                        $("#loans_wins_count_today").text(dashboard_tiles.loans_wins_count_today);
                         $("#stake_wins_today").text(dashboard_tiles.stake_wins_today);
-                        $("#stake_loss_today").text(dashboard_tiles.stake_loss_today);
-                        $("#stake_loss_count_today").text(dashboard_tiles.stake_loss_count_today);
+                        $("#payments_today").text(dashboard_tiles.payments_today);
+                        $("#payments_count_today").text(dashboard_tiles.payments_count_today);
 
                     } else if (response.error) {
                         console.log("jjk")
@@ -734,18 +650,18 @@
                     if (response.success) {
                         var dashboard_tiles = response.dashboard;
                         $("#balance_week").text(dashboard_tiles.balance_week);
-                        $("#deposits_week").text(dashboard_tiles.deposits_week);
-                        $("#deposits_count_week").text(dashboard_tiles.deposits_count_week);
-                        $("#withdraws_week").text(dashboard_tiles.withdraws_week);
+                        $("#ussd_week").text(dashboard_tiles.ussd_week);
+                        $("#ussd_count_week").text(dashboard_tiles.ussd_count_week);
+                        $("#registrations_week").text(dashboard_tiles.registrations_week);
 
 
-                        $("#withdraws_count_week").text(dashboard_tiles.withdraws_count_week);
-                        $("#stakes_week").text(dashboard_tiles.stakes_week);
-                        $("#stakes_count_week").text(dashboard_tiles.stakes_count_week);
-                        $("#stakes_wins_count_week").text(dashboard_tiles.stakes_wins_count_week);
+                        $("#registrations_count_week").text(dashboard_tiles.registrations_count_week);
+                        $("#loans_week").text(dashboard_tiles.loans_week);
+                        $("#loans_count_week").text(dashboard_tiles.loans_count_week);
+                        $("#loans_wins_count_week").text(dashboard_tiles.loans_wins_count_week);
                         $("#stake_wins_week").text(dashboard_tiles.stake_wins_week);
-                        $("#stake_loss_week").text(dashboard_tiles.stake_loss_week);
-                        $("#stake_loss_count_week").text(dashboard_tiles.stake_loss_count_week);
+                        $("#payments_week").text(dashboard_tiles.payments_week);
+                        $("#payments_count_week").text(dashboard_tiles.payments_count_week);
 
                     } else if (response.error) {
                         console.log("jjk")
@@ -773,18 +689,18 @@
                     if (response.success) {
                         var dashboard_tiles = response.dashboard;
                         $("#balance_month").text(dashboard_tiles.balance_month);
-                        $("#deposits_month").text(dashboard_tiles.deposits_month);
-                        $("#deposits_count_month").text(dashboard_tiles.deposits_count_month);
-                        $("#withdraws_month").text(dashboard_tiles.withdraws_month);
+                        $("#ussd_month").text(dashboard_tiles.ussd_month);
+                        $("#ussd_count_month").text(dashboard_tiles.ussd_count_month);
+                        $("#registrations_month").text(dashboard_tiles.registrations_month);
 
 
-                        $("#withdraws_count_month").text(dashboard_tiles.withdraws_count_month);
-                        $("#stakes_month").text(dashboard_tiles.stakes_month);
-                        $("#stakes_count_month").text(dashboard_tiles.stakes_count_month);
-                        $("#stakes_wins_count_month").text(dashboard_tiles.stakes_wins_count_month);
+                        $("#registrations_count_month").text(dashboard_tiles.registrations_count_month);
+                        $("#loans_month").text(dashboard_tiles.loans_month);
+                        $("#loans_count_month").text(dashboard_tiles.loans_count_month);
+                        $("#loans_wins_count_month").text(dashboard_tiles.loans_wins_count_month);
                         $("#stake_wins_month").text(dashboard_tiles.stake_wins_month);
-                        $("#stake_loss_month").text(dashboard_tiles.stake_loss_month);
-                        $("#stake_loss_count_month").text(dashboard_tiles.stake_loss_count_month);
+                        $("#payments_month").text(dashboard_tiles.payments_month);
+                        $("#payments_count_month").text(dashboard_tiles.payments_count_month);
 
                     } else if (response.error) {
                         console.log("jjk")

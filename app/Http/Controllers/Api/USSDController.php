@@ -84,7 +84,8 @@ $profile = $this->profileService->checkProfile($this->_msisdn);
 }
 */
 
-$mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
+//$mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
+$mifos_result =  ['success'=>true,'profile'=>['name'=>'george']];
 if(!$mifos_result)
 {
   $this->displayText = "Welcome to Nobel Lending.\n 1. Register\n2. View Terms and Conditions \n3 Know more";
@@ -520,13 +521,19 @@ switch($this->_input)
       $this->displayText = "My Account, Select \n1. View Loan Balance \n2. View Repayment History \n0. Home";
       $this->nextFunction = "accountMenu";
       break;
+      case 3:
+        $this->displayText = "Your active loan balance is KES 1,000 \n1. Make Payment \n0 Home";
+        $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+
+        $this->nextFunction = "loanPayment";
+        break;
       case 4:
-        $this->displayText = "Our Contact numbers are ";
-        $this->nextFunction = "END";
+        $this->displayText = "Our Contact numbers are 0726397276 ";
+        $this->sessionState = "END";
         break;
       case 0:
-        $this->displayText = "Thank you for using Nobel Lending dial xxx to access your NEXT LOAN ";
-        $this->nextFunction = "END";
+        $this->displayText = "Thank you for using Nobel Lending dial to access your NEXT LOAN ";
+        $this->sessionState = "END";
         break;
         default:
         $this->displayText = "Invalid Entry, Select \n1. Apply Loan \n2. My Account\n3. Make Payment \n4. Help \n0. Exit";
@@ -795,5 +802,100 @@ case 2:
   break;
 }
 }
+
+
+function accountMenu()
+{
+  $this->displayText = "My Account, Select \n1. View Loan Balance \n2. View Repayment History \n0. Home";
+  $this->nextFunction = "accountMenu";
+  $this->sessionState = "CON";
+  if($this->_input ==1)
+  {
+    $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n0 Home";
+    $this->nextFunction = "loanPayment";
+    $this->sessionState = "CON";
+    return;
+  }
+  if($this->_input ==2)
+  {
+    $this->displayText = "You shall receive your loan repayment history shortly";
+    $this->nextFunction = "accountMenu";
+    $this->sessionState = "END";
+    return;
+  }
+  if($this->_input ==0)
+  {
+    $this->displayText = " Select \n1. Apply Loan \n2. My Account\n3. Make Payment \n4. Help \n0. Exit";
+    $this->nextFunction = "loanMenu";
+    $this->previousPage = "";
+    $this->sessionState = "CON";
+    return;
+  }
 }
+
+function loanPayment()
+{
+  $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+  $this->nextFunction = "loanPayment";
+  $this->sessionState = "CON";
+  if($this->_input ==1)
+  {
+    $this->displayText = "Please enter your mPesa PIN to clear the Loan";
+    $this->nextFunction = "loanPayment";
+    $this->sessionState = "END";
+    $pay_loan = $this->loanService->payLoan(1000,$this->_msisdn);
+
+    return;
+  }
+
+  if($this->_input ==2)
+  {
+    $this->displayText = "Please enter your amount you wish to pay Maximum is KES 1,000 \n0. Back";
+    $this->nextFunction = "loanPayment_partial";
+    $this->sessionState = "CON";
+    return;
+  }
+
+  if($this->_input ==0)
+  {
+    $this->displayText = " Select \n1. Apply Loan \n2. My Account\n3. Make Payment \n4. Help \n0. Exit";
+    $this->nextFunction = "loanMenu";
+    $this->previousPage = "";
+    $this->sessionState = "CON";
+    return;
+  }
+
+}
+
+function loanPayment_partial()
+{
+  $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+  $this->nextFunction = "loanPayment";
+  $this->sessionState = "CON";
+
+  if($this->_input ==0)
+  {
+    $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+    $this->nextFunction = "loanPayment";
+    $this->sessionState = "CON";
+    return;
+  }
+
+  if(!ctype_digit($this->_input))
+{
+  $this->displayText = "Invalid Entry \nPlease enter your amount you wish to pay Maximum is KES 1,000 \n0. Back";
+  $this->nextFunction = "loanPayment_partial";
+  $this->sessionState = "CON";
+  return;
+}
+
+$pay_loan = $this->loanService->payLoan($this->_input,$this->_msisdn);
+
+$this->displayText = "Please enter your mPesa PIN to clear the Loan";
+$this->nextFunction = "loanPayment";
+$this->sessionState = "END";
+return;
+
+}
+        }
 ?>
