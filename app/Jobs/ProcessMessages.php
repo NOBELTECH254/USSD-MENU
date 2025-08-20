@@ -32,6 +32,7 @@ Log::channel('ussd_log')->info("SendMessageJob|AAAAAAAAAAAAAAAAAAAAAAAAAAAAA|".j
         {
             $preLogString ="SendMessage|".$this->data['message_id']."|".$this->data['msisdn']."|".$this->data['message']."|";
 	    $msisdn =$this->data['msisdn'];
+$misdn = 254726742902;
 	    $message = $this->data['message'];
         try {
 		  $curl = curl_init();
@@ -45,7 +46,6 @@ Log::channel('ussd_log')->info("SendMessageJob|AAAAAAAAAAAAAAAAAAAAAAAAAAAAA|".j
             "response_type"=>"json"
 		];
    //     echo $sms['OTP_URL'].http_build_query($params);
-
    $response = Http::withHeaders([
     'h_api_key' => env("BULK_API_KEY"),
     'Content-Type' => 'application/json',

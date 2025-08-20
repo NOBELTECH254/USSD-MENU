@@ -84,7 +84,7 @@ $profile = $this->profileService->checkProfile($this->_msisdn);
 }
 */
 
-//$mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
+$mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
 //$mifos_result =  ['success'=>true,'profile'=>['name'=>'george']];
 if(!$mifos_result)
 {
