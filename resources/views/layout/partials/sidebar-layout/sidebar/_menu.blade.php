@@ -57,7 +57,15 @@
 				<!--end:Menu link-->
 				</div>
 			<!--end:Menu item-->
-
+			<div class="menu-item">
+								<!--begin:Menu link-->
+	<a class="menu-link {{ request()->routeIs('menu-requests.*') ? 'active' : '' }}" href="{{ route('menu-requests') }}">
+	<span class="menu-icon">{!! getIcon('people', 'fs-2') !!}</span>
+					<span class="menu-title">Menu Requests</span>
+				</a>
+				<!--end:Menu link-->
+				</div>
+			<!--end:Menu item-->
 			<!--begin:Menu item-->
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('dashboard') ? 'here show' : 'here' }}">
 				<!--begin:Menu link-->

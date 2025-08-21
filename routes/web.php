@@ -51,6 +51,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('messages', MessagesController::class);
     Route::resource('account-signups', AccountSignupsController::class);
     Route::resource('ussd-sessions', UssdSessionsController::class);
+    Route::get('/menu-requests', [UssdSessionsController::class, 'menu_requests'])->name('menu-requests');
+    Route::get('/menu-requests/{uuid}/show', [UssdSessionsController::class, 'menu_requests_show'])->name('menu-requests.show');
+
     Route::resource('response-templates', ResponseTemplatesController::class);
 
     Route::get('/charts', [ChartsController::class, 'index'])->name('charts');

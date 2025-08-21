@@ -46,7 +46,7 @@ class ProcessMenuRequests implements ShouldQueue
                 'request_data'    => $request_data,
                 'request_response'       => $request_response,
             ]);     
- Log::channel('ussd_logs')->info(" |ProcessMenuRequests received data".json_encode($data)."|Response =>".json_encode($response));
+ Log::channel('ussd_logs')->info(" |ProcessMenuRequests received data".json_encode($this->data)."|Response =>".json_encode($response));
     } catch (Exception $e) {
         // If something went wrong, rollback the transaction
         DB::rollback();

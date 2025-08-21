@@ -549,7 +549,7 @@ if($pending_active_loans['success'] ==true)
 return ;
 }
 
-if($pending_active_loans['success'] <> 201)
+if($pending_active_loans['success'] ===201)
 {
   $this->displayText = "Thank you, please contact support to confirm your loan eligibilty ";
   $this->nextFunction = "END";
@@ -579,7 +579,7 @@ return;
           $this->sessionState = "END";
           return;
         }
-        if($active_loans['success'] ==201)
+        if($active_loans['success'] ===201)
         {
           $this->displayText = "Your don't have any active loan at the moment";
           $this->nextFunction = "loanPayment";
@@ -601,10 +601,10 @@ return;
             $loanIds          = [];
         
         
-            foreach ($activeLoans['activeLoans'] as $loan) {
-              $loanIds[] = $loan['id'];
+            foreach ($active_loans['activeLoans'] as $loan) {
+              $loanIds[] = $loan['loanId'];
               $totalPrincipal   += ceil($loan['principal']);
-              $totalOutstanding += ceil($loan['loanBalance']);
+              $totalOutstanding += ceil($loan['outstanding']);
           }
            
         $this->saveSessionVar("active_loans",['loan_ids' =>$loanIds,"totalPrincipal"=>$totalPrincipal,"totalOutstanding"=>$totalOutstanding,"active_loans"=>$active_loans]);
