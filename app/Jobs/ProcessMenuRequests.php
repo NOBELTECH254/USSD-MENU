@@ -7,18 +7,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
+use App\Models\MenuRequests;
 use Illuminate\Support\Facades\Log;
-use App\Traits\MessageTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Hashids\Hashids;
-use App\Services\LoanService;
-
-class ProcessPaymentRequest implements ShouldQueue
+class ProcessMenuRequests implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,MessageTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $data;
     public $preLogString;
       
@@ -28,7 +25,7 @@ class ProcessPaymentRequest implements ShouldQueue
     public function __construct($data)
     {
         $this->data = $data;
-        Log::channel('ussd_logs')->info(" |ProcessPayments received data".json_encode($data));
+        Log::channel('ussd_logs')->info(" |ProcessMenuRequests received data".json_encode($data));
         $this->preLogString = "|ProcessPayments ".json_encode($data)."|";
 
     }
@@ -36,14 +33,20 @@ class ProcessPaymentRequest implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(LoanService $loanService): void
+    public function handle(): void
     {
         try {
             extract($this->data);
-            //    \App\Jobs\ProcessMessages::ProcessPaymentRequest(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']]);
-//    public function payLoan($active_loans,$mifos_profile,$mobile_number,$$ )
-            $pay_loan = $loanService->payLoan($active_loans,$mifos_profile,$mobile_number,$amount);
- Log::channel('ussd_logs')->info(" |ProcessPayments received data".json_encode($this->data)."|Response =>".json_encode($pay_loan));
+            $menu_requests = MenuRequests::create([
+                'mobile_number' => $mobile_number,
+                'menu' => $menu,
+                'request'  => $request,
+                'response' =>$response,
+                "status"=>"success",
+                'request_data'    => $request_data,
+                'request_response'       => $request_response,
+            ]);     
+ Log::channel('ussd_logs')->info(" |ProcessMenuRequests received data".json_encode($data)."|Response =>".json_encode($response));
     } catch (Exception $e) {
         // If something went wrong, rollback the transaction
         DB::rollback();

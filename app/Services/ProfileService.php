@@ -55,9 +55,18 @@ class ProfileService
         $message = message_template('account-activation', ['pin'=>$pin
         ]);
         $this->SendMessage($profile_added->id,$profile['mobileNo'] ,$message,"ACCOUNT-ACTIVATION");
-
+/*   $menu_requests = MenuRequests::create([
+                'mobile_number' => $mobile_number,
+                'menu' => $menu,
+                'request'  => $request,
+                'response' =>$response,
+                'request_data'    => $request_data,
+                'request_response'       => $request_response,
+            ]);
+            */
+        $this->store_ussd(['mobile_number'=>$profile['mobileNo'],"menu"=>"ACTIVATION","request"=>"Activate profile and send pin to customer ".$profile['mobileNo'],"response"=>"success","request_data"=>[],"request_response"=>[]]);
         return ['status' => 'success', 'message' => 'Profile created successfully', 'pin' => $pin,'profile' =>$profile];
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         report($e);
         return ['success' => false, 'message' => $e->getMessage()];
     }

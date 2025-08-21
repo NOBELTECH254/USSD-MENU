@@ -20,9 +20,9 @@ class LoanService
 
     public function __construct()
     {
-        $this->baseUrl = "https://lending.nobellending.co.ke/fineract-provider/api/v1";
-        $this->username = "nobel";
-        $this->password = "nobel3047";
+        $this->baseUrl = env("MIFOS_URL");
+        $this->username = env("MIFOS_USERNAME");
+        $this->password = env("MIFOS_PASSWORD");
     }
 
 
@@ -37,10 +37,7 @@ class LoanService
                     ->get($this->baseUrl . '/loanproducts', [
                         'sqlSearch' => "c.status=loanProduct.active"
                     ]);
-
-              
    Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Response: {$response->body()} |Status :{$response->status()} ");
-
             if ($response->status() !== 200) {
                 return ['success' => false, 'message' => 'API call failed'];
             }
@@ -91,8 +88,7 @@ return ['success' => true, 'message' => 'loan products exist' ,"loan_products"=>
             "transactionProcessingStrategyId" =>  $selected_loan['transactionProcessingStrategyId'],
             "loanType"                      => "individual"
         ];
-        echo json_encode($payload);
-        // Step 5: Apply loan
+         // Step 5: Apply loan
         $response = Http::withBasicAuth($this->username, $this->password)
         ->withOptions([
             'verify' => true, // Enforce SSL certificate verification
@@ -102,35 +98,178 @@ return ['success' => true, 'message' => 'loan products exist' ,"loan_products"=>
         if ($response->successful()) {
             $message = message_template('loan-application-success', ['amount'=>$loan_amount,"payable" =>$totalPayable,"due_date"=>""
         ]);
-        $this->SendMessage($profile_added->id,$profile['mobileNo'] ,$message,"LOAN-REQUEST");
+
+      
+        $this->SendMessage($profile->id,$profile->mobile_number ,$message,"LOAN-REQUEST");
+        $this->store_ussd(['mobile_number'=>$profile->mobile_number,"menu"=>"LOAN-REQUEST","request"=>"apply loan ".$profile->mobile_number. " Amount Ksh $loan_amount","response"=>$message,"request_data"=>[],"request_response"=>[]]);
 
             return ['success' => true, 'data' => $response->json()];
         } else {
             $message = message_template('loan-application-fail', ['amount'=>$loan_amount,"payable" =>$totalPayable,"due_date"=>""
         ]);
-        $this->SendMessage($profile_added->id,$profile['mobileNo'] ,$message,"LOAN-REQUEST");
+        $this->SendMessage($profile->id,$profile->mobile_number ,$message,"LOAN-REQUEST");
 
             return ['success' => false, 'error' => $response->json()];
         }
 
-        die("afda");
         ///we apply loan now 
     }
 
 
-    public function payLoan($loan_amount,$msisdn )
+    public function payLoan($active_loans,$mifos_profile,$mobile_number,$amount )
+    {
+$loan_id =$active_loans['loan_ids'][0];
+        try {
+            $response = Http::withBasicAuth('mifosuser', 'mifospassword') // replace with real credentials
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ])
+                ->post(env("MIFOS_PAYMENT_URL"), [
+                    [
+                        "mobile"=>$mobile_number,
+                        "loanId"=>$loan_id,
+                        "amount"=>$amount
+                ]
+                ]);
+            if ($response->successful() && isset($response['resourceId'])) {
+                return "END Payment of KES {$amount} applied successfully to Loan #{$loan_id}";
+            }
+    
+            return "END Payment not confirmed. Response: " . $response->body();
+    
+        } catch (\Exception $e) {
+            return "END Payment failed: " . $e->getMessage();
+        }
+    }
+    public function fetchLoans($mifos_profile)
     {
 
-        $message = message_template('loan-payment', ['amount'=>$loan_amount,
-    ]);
-    $this->SendMessage(0,$msisdn ,$message,"LOAN-PAYMENT");
+            try {
+                $response = Http::withBasicAuth($this->username, $this->password)
+                    ->withOptions([
+                        'verify' => true, // Enforce SSL certificate verification
+                    ])
+                    ->get($this->baseUrl . '/clients/'.$mifos_profile['id'].'/accounts', [
+                      'fields' => 'loanAccounts'
+                    ]);
 
-        
-     
+              
+   Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Response: {$response->body()} |Status :{$response->status()} ");
+
+            if ($response->status() !== 200) {
+                return ['success' => false, 'message' => 'API call failed'];
+            }
+    
+            $products = $response->json();
+
+            if (empty($products) ) {
+                return ['success' => false, 'message' => 'No record found on Mifos'];
+            }
+
+            $accounts = $response->json()['loanAccounts'] ?? [];
+            $activeOrPending = array_filter($accounts, function ($loan) {
+                return $loan['status']['active'] === true
+                    || ($loan['status']['pendingApproval'] ?? false) === true;
+            });
+
+            $this->store_ussd(['mobile_number'=>$mifos_profile['mobileNo'],"menu"=>"FETCH-LOANS","request"=>"".$mifos_profile['mobileNo'],"response"=>json_encode($activeOrPending),"request_data"=>["profile_id"=>$mifos_profile['id']],"request_response"=>$activeOrPending]);
+
+            if(isset($activeOrPending))
+            return [
+                'success' => true,
+                'loanAccounts' => array_values($activeOrPending)
+            ];
+            else {
+                return [
+                    'success' => 201,
+                    'message'=>"no loan"
+                ];
+            }
+
+    } catch (\Exception $e) {
+        report($e);
+        Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Error: {$e->getMessage()} ");
+        return ['success' => false, 'message' => $e->getMessage()];
+    }
     }
 
-    private function generatePin($length = 4)
-    {
-        return str_pad(rand(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);
+
+    public function loansBalance($mifos_profile)
+{
+    try {
+        //code...
+        $response = Http::withBasicAuth($this->username, $this->password)
+        ->withOptions([
+            'verify' => true, // Enforce SSL certificate verification
+        ])
+        ->get($this->baseUrl . '/clients/'.$mifos_profile['id'].'/accounts', [
+          'fields' => 'loanAccounts'
+        ]);
+
+        Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Response: {$response->body()} |Status :{$response->status()} ");
+
+        if ($response->status() !== 200) {
+            return ['success' => false, 'message' => 'API call failed'];
+        }
+
+        $accounts = $response->json();
+
+
+
+    $loans = $accounts['loanAccounts'] ?? [];
+
+    // Step 2: Filter for active loans
+    $activeLoans = array_filter($loans, function ($loan) {
+        return $loan['status']['active'] ?? false;
+    });
+
+    if (empty($activeLoans)) {
+        return [
+            'success' => 201,
+            'message' => 'No active loans found'
+        ];
     }
+
+    // Step 3: Get full loan details for each active loan
+    $results = [];
+    foreach ($activeLoans as $loan) {
+        $response = Http::withBasicAuth($this->username, $this->password)
+        ->withOptions([
+            'verify' => true, // Enforce SSL certificate verification
+        ])
+        ->get($this->baseUrl . '/loans/'. $loan['id'], );
+        Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Response: {$response->body()} |Status :{$response->status()} ");
+        if ($response->status() == 200) {
+        $details = $response->json();
+       
+        $results[] = [
+            'loanId'      => $details['id'],
+            'product'     => $details['loanProductName'],
+            'principal'   => $details['principal'],
+            'outstanding' => $details['summary']['totalOutstanding'],
+            'disbursed'   => $details['disbursementDetails'][0]['netDisbursalAmount'] ?? null,
+            'status'      => $details['status']
+        ];
+    }
+}
+if(sizeOf($results)> 0)
+    return [
+        'success' => true,
+        'activeLoans' => $results
+    ];
+    else {
+        return [
+            'success' => false,
+            'message' => "Loans are not available at the moment"
+        ];
+    }
+} catch (Exception $e) {
+    report($e);
+    Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Error: {$e->getMessage()} ");
+    return ['success' => false, 'message' => $e->getMessage()];
+}
+}
+
+  
 }

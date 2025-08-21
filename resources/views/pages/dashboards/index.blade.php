@@ -24,12 +24,7 @@
              </div>
             <!--end::Heading-->
 
-            <!--begin::Balance-->
-            <div class="d-flex text-center flex-column text-white pt-8">
-                <span class="fw-semibold fs-7">You Balance</span>
-                <span class="fw-bold fs-2x pt-1"  id ="balance_today">0</span>
-            </div>
-            <!--end::Balance-->
+          
         </div>
         <!--end::Header-->
 
@@ -50,7 +45,6 @@
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
                             <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">ussd dials</a>
-                            <div class="text-muted fw-bold fs-5" id ="ussd_count_today">0 </div> 
                         </div>
                         <!--end::Title-->
 
@@ -79,7 +73,6 @@
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
                             <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Registrations</a>
-                            <div class="text-muted fw-bold fs-5" id ="registrations_count_today">0 </div> 
 
                         </div>
                         <!--end::Title-->
@@ -110,7 +103,6 @@
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
                             <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">loans </a>
-                            <div class="text-muted fw-bold fs-5" id ="loans_count_today">0 </div> 
 
                         </div>
                         <!--end::Title-->
@@ -147,7 +139,6 @@
                         <!--begin::Title-->
                         <div class="mb-1 pe-3 flex-grow-1">
                             <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Payments </a>
-                            <div class="text-muted fw-bold fs-5" id ="payments_count_today">0 </div> 
 
                         </div>
                         <!--end::Title-->
@@ -188,12 +179,6 @@
                      </div>
                     <!--end::Heading-->
         
-                    <!--begin::Balance-->
-                    <div class="d-flex text-center flex-column text-white pt-8">
-                        <span class="fw-semibold fs-7">You Balance</span>
-                        <span class="fw-bold fs-2x pt-1"  id ="week_balance_today">0</span>
-                    </div>
-                    <!--end::Balance-->
                 </div>
                 <!--end::Header-->
         
@@ -214,7 +199,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">ussd</a>
-                                    <div class="text-muted fw-bold fs-5" id ="ussd_count_week">0 </div> 
                                 </div>
                                 <!--end::Title-->
         
@@ -244,7 +228,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">registrations</a>
-                                    <div class="text-muted fw-bold fs-5" id ="registrations_count_week">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
@@ -273,7 +256,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">loans </a>
-                                    <div class="text-muted fw-bold fs-5" id ="loans_count_week">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
@@ -303,7 +285,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Payments</a>
-                                    <div class="text-muted fw-bold fs-5" id ="payments_count_week">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
@@ -344,12 +325,7 @@
                      </div>
                     <!--end::Heading-->
         
-                    <!--begin::Balance-->
-                    <div class="d-flex text-center flex-column text-white pt-8">
-                        <span class="fw-semibold fs-7">You Balance</span>
-                        <span class="fw-bold fs-2x pt-1"  id ="balance_month">0</span>
-                    </div>
-                    <!--end::Balance-->
+                  
                 </div>
                 <!--end::Header-->
         
@@ -370,7 +346,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">ussd</a>
-                                    <div class="text-muted fw-bold fs-5" id ="ussd_count_month">0 </div> 
                                 </div>
                                 <!--end::Title-->
         
@@ -400,7 +375,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">registrations</a>
-                                    <div class="text-muted fw-bold fs-5" id ="registrations_count_month">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
@@ -429,7 +403,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">loans </a>
-                                    <div class="text-muted fw-bold fs-5" id ="loans_count_month">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
@@ -459,7 +432,6 @@
                                 <!--begin::Title-->
                                 <div class="mb-1 pe-3 flex-grow-1">
                                     <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold">Payments</a>
-                                    <div class="text-muted fw-bold fs-5" id ="payments_count_month">0 </div> 
         
                                 </div>
                                 <!--end::Title-->
@@ -545,14 +517,14 @@
                             },
                             colors: ['#7267EF'],
                             title: {
-                                text: 'Month Performance'
+                                text: 'USSD REQUESTS '
                             },
                             subtitle: {
                                 text: ''
                             },
                             yAxis: {
                                 title: {
-                                    text: 'Amount'
+                                    text: 'requests'
                                 }
                             },
                             xAxis: {
@@ -563,11 +535,8 @@
                                 }
                             },
                             series: [{
-                                name: 'loans',
-                                data: data.map(item => parseInt(item.bet_amount))
-                            }, {
-                                name: 'Wins',
-                                data: data.map(item => parseInt(item.bet_wins))
+                                name: 'requests',
+                                data: data.map(item => parseInt(item.requests))
                             }],
                             responsive: {
                                 rules: [{

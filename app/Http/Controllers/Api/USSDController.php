@@ -514,6 +514,51 @@ switch($this->_input)
 {
   case 1:
     //fetch loans
+    $mifos_profile = $this->getSessionVar("mifos_profile");
+
+
+$pending_active_loans = $this->loanService->fetchLoans($mifos_profile);
+Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|pending_active_loans".json_encode($pending_active_loans));
+
+if(empty($pending_active_loans))
+{
+  $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
+  $this->nextFunction = "END";
+  $this->previousPage = "";
+  $this->sessionState = "END";
+return;
+}
+
+if($pending_active_loans['success'] ==false)
+{
+  $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
+  $this->nextFunction = "END";
+  $this->previousPage = "";
+  $this->sessionState = "END";
+return;
+
+}
+
+if($pending_active_loans['success'] ==true)
+{
+  //active loans
+  $this->displayText = "You have active loans that should be cleared first before applying for another loan  ";
+  $this->nextFunction = "END";
+  $this->previousPage = "";
+  $this->sessionState = "END";
+return ;
+}
+
+if($pending_active_loans['success'] <> 201)
+{
+  $this->displayText = "Thank you, please contact support to confirm your loan eligibilty ";
+  $this->nextFunction = "END";
+  $this->previousPage = "";
+  $this->sessionState = "END";
+return;
+}
+
+
     $this->displayText = "By continuing, you agree with Nobel Lending service terms and conditions \n1. Accept \n2. Decline";
     $this->nextFunction = "approveLoanRequest";
     break;
@@ -522,9 +567,48 @@ switch($this->_input)
       $this->nextFunction = "accountMenu";
       break;
       case 3:
-        $this->displayText = "Your active loan balance is KES 1,000 \n1. Make Payment \n0 Home";
-        $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+        $mifos_profile = $this->getSessionVar("mifos_profile")??null;
 
+        $active_loans = $this->loanService->loansBalance($mifos_profile);
+        Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|active_loans".json_encode($active_loans));
+        if($active_loans['success'] ==false)
+        {
+        
+          $this->displayText = "Please try later to check your loan";
+          $this->nextFunction = "loanPayment";
+          $this->sessionState = "END";
+          return;
+        }
+        if($active_loans['success'] ==201)
+        {
+          $this->displayText = "Your don't have any active loan at the moment";
+          $this->nextFunction = "loanPayment";
+          $this->sessionState = "END";
+          return;
+        }
+        
+        
+        if($active_loans['success'] <> true )
+        {
+          $this->displayText = "Please try late to check your loan status";
+          $this->nextFunction = "loanPayment";
+          $this->sessionState = "END";
+          return;
+        }
+        
+        $totalPrincipal   = 0;
+            $totalOutstanding = 0;
+            $loanIds          = [];
+        
+        
+            foreach ($activeLoans['activeLoans'] as $loan) {
+              $loanIds[] = $loan['id'];
+              $totalPrincipal   += ceil($loan['principal']);
+              $totalOutstanding += ceil($loan['loanBalance']);
+          }
+           
+        $this->saveSessionVar("active_loans",['loan_ids' =>$loanIds,"totalPrincipal"=>$totalPrincipal,"totalOutstanding"=>$totalOutstanding,"active_loans"=>$active_loans]);
+        $this->displayText =  "CON Total Loan: KES {$totalPrincipal}\nOutstanding: KES {$totalOutstanding}\n1. Make Payment \n2. Make Partial Payment \n0 Home";
         $this->nextFunction = "loanPayment";
         break;
       case 4:
@@ -551,6 +635,8 @@ function approveLoanRequest()
   case 1:
     //fetch loans
     $mifos_loans = $this->loanService->fetchLoanProducts();
+    print_r($mifos_loans);
+    die();
     if(empty( $mifos_loans))
     {
     $this->displayText = "Welcome to Nobel Lending.\n Please Contact customer care for activation of your account ";
@@ -593,6 +679,9 @@ break;
 }
 
 function loanProductMenu(){
+
+
+  $mifos_profile = $this->getSessionVar("mifos_profile")??null;
 
   $loan_products = json_decode($this->getSessionVar("loan_products"),true) ??null;
   if(!$loan_products)
@@ -726,13 +815,11 @@ else {
    $interest = ($loan_amount * ($interestRate / 100));
    $totalPayable = $loan_amount + ceil($interest);
  
-   $this->displayText = "Confirm ".$selected_loan['name']." Loan Details\n Amount: Ksh".number_format($loan_amount,0)."\nInterest:".number_format(ceil($interest),0) ."\nFees:Ksh 0\nTotal: Kes ".number_format($totalPayable)." \n Reply with \n1. Confirm\n2. Cancel";
+   $this->displayText = "Confirm ".$selected_loan['name']." Loan Details \nAmount: Ksh".number_format($loan_amount,0)."\nInterest:".number_format(ceil($interest),0) ."\nTotal: Kes ".number_format($totalPayable)." \n Reply with \n1. Confirm\n2. Cancel";
 
    $this->nextFunction = "approveLoanMenu";
    $this->sessionState = "CON";
-
 }
-
 }
 }
 
@@ -806,14 +893,47 @@ case 2:
 
 function accountMenu()
 {
+  $mifos_profile = $this->getSessionVar("mifos_profile")??null;
   $this->displayText = "My Account, Select \n1. View Loan Balance \n2. View Repayment History \n0. Home";
   $this->nextFunction = "accountMenu";
   $this->sessionState = "CON";
   if($this->_input ==1)
   {
-    $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n0 Home";
+    $active_loans = $this->loanService->loansBalance($mifos_profile);
+
+    Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|active_loans".json_encode($active_loans));
+    if($active_loans['success'] ==false)
+    {
+    
+      $this->displayText = "Please try later to check your loan";
+      $this->nextFunction = "loanPayment";
+      $this->sessionState = "END";
+      return;
+    }
+    if($active_loans['success'] ===201)
+    {
+      $this->displayText = "Your don't have any active loan at the moment";
+      $this->nextFunction = "loanPayment";
+      $this->sessionState = "END";
+      return;
+    }
+
+    
+    $totalPrincipal   = 0;
+        $totalOutstanding = 0;
+        $loanIds          = [];
+   
+        foreach ($active_loans['activeLoans'] as $loan) {
+          $loanIds[] = $loan['loanId'];
+          $totalPrincipal   += ceil($loan['principal']);
+          $totalOutstanding += ceil($loan['outstanding']);
+      }
+       
+    $this->saveSessionVar("active_loans",['loan_ids' =>$loanIds,"totalPrincipal"=>$totalPrincipal,"totalOutstanding"=>$totalOutstanding,"active_loans"=>$active_loans]);
+    $this->displayText =  "CON Total Loan: KES {$totalPrincipal}\nOutstanding: KES {$totalOutstanding}\n1. Make Payment \n2. Make Partial Payment \n0 Home";
     $this->nextFunction = "loanPayment";
     $this->sessionState = "CON";
+ 
     return;
   }
   if($this->_input ==2)
@@ -835,22 +955,22 @@ function accountMenu()
 
 function loanPayment()
 {
-  $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
-  $this->nextFunction = "loanPayment";
-  $this->sessionState = "CON";
+  $mifos_profile = $this->getSessionVar("mifos_profile")??null;
+  $active_loans = $this->getSessionVar("active_loans")??null;
   if($this->_input ==1)
   {
     $this->displayText = "Please enter your mPesa PIN to clear the Loan";
     $this->nextFunction = "loanPayment";
     $this->sessionState = "END";
-    $pay_loan = $this->loanService->payLoan(1000,$this->_msisdn);
+    \App\Jobs\ProcessPaymentRequest::dispatchSync(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']]);
 
+$this->store_ussd(['mobile_number'=>$mifos_profile['mobileNo'],"menu"=>"PAY-LOAN","request"=>"Pay loan ".$mifos_profile['mobileNo']."  amount ". $active_loans['totalOutstanding'],"response"=>json_encode($active_loans),"request_data"=>['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']],"request_response"=>[]]);
     return;
   }
 
   if($this->_input ==2)
   {
-    $this->displayText = "Please enter your amount you wish to pay Maximum is KES 1,000 \n0. Back";
+    $this->displayText = "Please enter your amount you wish to pay Maximum is KES ".$active_loans['totalOutstanding']." \n0. Back";
     $this->nextFunction = "loanPayment_partial";
     $this->sessionState = "CON";
     return;
@@ -869,13 +989,15 @@ function loanPayment()
 
 function loanPayment_partial()
 {
-  $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+//  $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
   $this->nextFunction = "loanPayment";
   $this->sessionState = "CON";
+  $mifos_profile = $this->getSessionVar("mifos_profile")??null;
+  $active_loans = $this->getSessionVar("active_loans")??null;
 
   if($this->_input ==0)
   {
-    $this->displayText = "Your active loan is KES 1,000 \n1. Make Payment \n2. Make Partial Payment \n0 Home";
+    $this->displayText = "Your active loan is KES ".$active_loans['totalOutstanding']." \n1. Make Payment \n2. Make Partial Payment \n0 Home";
     $this->nextFunction = "loanPayment";
     $this->sessionState = "CON";
     return;
@@ -883,14 +1005,15 @@ function loanPayment_partial()
 
   if(!ctype_digit($this->_input))
 {
-  $this->displayText = "Invalid Entry \nPlease enter your amount you wish to pay Maximum is KES 1,000 \n0. Back";
+  $this->displayText = "Invalid Entry \nPlease enter your amount you wish to pay Maximum is KES ".$active_loans['totalOutstanding']." \n0. Back";
   $this->nextFunction = "loanPayment_partial";
   $this->sessionState = "CON";
   return;
 }
+$this->store_ussd(['mobile_number'=>$mifos_profile['mobileNo'],"menu"=>"PAY-LOAN","request"=>"Pay loan ".$mifos_profile['mobileNo']."  amount ". $active_loans['totalOutstanding'],"response"=>json_encode($active_loans),"request_data"=>['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']],"request_response"=>[]]);
 
-$pay_loan = $this->loanService->payLoan($this->_input,$this->_msisdn);
-
+//$pay_loan = $this->loanService->payLoan($active_loans,$mifos_profile,$this->_msisdn,$active_loans['totalOutstanding']);
+\App\Jobs\ProcessPaymentRequest::dispatch(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']]);
 $this->displayText = "Please enter your mPesa PIN to clear the Loan";
 $this->nextFunction = "loanPayment";
 $this->sessionState = "END";
