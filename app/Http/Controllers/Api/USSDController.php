@@ -519,7 +519,8 @@ switch($this->_input)
 
 $pending_active_loans = $this->loanService->fetchLoans($mifos_profile);
 Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|pending_active_loans".json_encode($pending_active_loans));
-
+print_r($pending_active_loans);
+die();
 if(empty($pending_active_loans))
 {
   $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
