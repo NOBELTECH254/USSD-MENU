@@ -44,6 +44,7 @@ trait MessageTrait
             Log::channel('ussd_log')->info("Send Message request |".json_encode($data));       
             //Log::channel('ussd_log')->info("Send Message request |$request_id,$message,$msisdn,$source | created message ". $message->id);
             \App\Jobs\ProcessMenuRequests::dispatchSync($data);
+            
             return response()->json([ "message" => "Message queued for sending ","status" => true, "code" => 200,]);   
   return response()->json([ "message" => "cannot create message","status" => false, "code" => 422,],422);
     } catch (Throwable $th) {
