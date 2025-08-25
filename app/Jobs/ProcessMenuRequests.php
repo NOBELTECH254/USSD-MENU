@@ -25,7 +25,7 @@ class ProcessMenuRequests implements ShouldQueue
     public function __construct($data)
     {
         $this->data = $data;
-        Log::channel('ussd_logs')->info(" |ProcessMenuRequests received data".json_encode($data));
+        Log::channel('ussd_log')->info(" |ProcessMenuRequests received data".json_encode($data));
         $this->preLogString = "|ProcessPayments ".json_encode($data)."|";
 
     }
@@ -46,12 +46,12 @@ class ProcessMenuRequests implements ShouldQueue
                 'request_data'    => $request_data,
                 'request_response'       => $request_response,
             ]);     
- Log::channel('ussd_logs')->info(" |ProcessMenuRequests received data".json_encode($this->data)."|Response =>".json_encode($response));
+ Log::channel('ussd_log')->info(" |ProcessMenuRequests received data".json_encode($this->data)."|Response =>".json_encode($response));
     } catch (Exception $e) {
         // If something went wrong, rollback the transaction
         DB::rollback();
         // Log the error message
-        Log::channel('ussd_logs')->error("$this->preLogString XXXXXX |".$e->getMessage());
+        Log::channel('ussd_log')->error("$this->preLogString XXXXXX |".$e->getMessage());
         // Return an error response to the user
         return ;
     }

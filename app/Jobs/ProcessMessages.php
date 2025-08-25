@@ -32,7 +32,6 @@ Log::channel('ussd_log')->info("SendMessageJob|AAAAAAAAAAAAAAAAAAAAAAAAAAAAA|".j
         {
             $preLogString ="SendMessage|".$this->data['message_id']."|".$this->data['msisdn']."|".$this->data['message']."|";
 	    $msisdn =$this->data['msisdn'];
-$misdn = 254726742902;
 	    $message = $this->data['message'];
         try {
 		  $curl = curl_init();
@@ -51,25 +50,13 @@ $misdn = 254726742902;
     'Content-Type' => 'application/json',
 ])->timeout(10) ->post(env("SMS_URL"), $params);
 $curl_response = $response->json();
-Log::channel('ussd_log')->info($preLogString ."|".env("SMS_URL")." |Send request| ".env("SMS_URL").json_encode($params)."|=> Response =>".json_encode($curl_response));
+Log::channel('ussd_log')->info($preLogString ."|".env("SMS_URL")." |Send request| ".env("SMS_URL")."/".json_encode($params)."|=> Response =>".json_encode($curl_response));
 
 if ($response->successful()) {
     
      Log::channel('ussd_log')->info($preLogString ." |Send request| ".env("SMS_URL").json_encode($params)."|=> Response =>".json_encode($curl_response));
 }
 
-
-		curl_setopt($curl, CURLOPT_URL, env("SMS_URL").http_build_query($params));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		$curl_response = curl_exec($curl);
-        Log::channel('ussd_log')->info($preLogString ." |Send request| ".env("SMS_URL").http_build_query($params)."|=> Response =>".$curl_response);
-$update = ['status_message'=>"message dispatched to network".$curl_response,"status"=>32];
-        if (curl_errno($curl) != 0)
-        {
-            $update = ['status_message'=>"message dispatched to network".$curl_response,"status"=>3];
-
-        }
-        curl_close($curl);     
     //       $update_message = Messages::where('id','=',$this->date['message_id'])->update($update);
     } catch (Throwable $e) {
        Log::channel('ussd_log')->info("Send Message request |".json_encode($this->data)."| XXXERRORXXX|status to failed| Error Message => ".$th->getMessage());

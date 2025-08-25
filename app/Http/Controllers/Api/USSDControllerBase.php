@@ -36,15 +36,17 @@ class USSDControllerBase extends Controller {
 	public function __construct(Request $request,ProfileService $profileService,LoanService $loanService)
 	{
 		Log::info(__METHOD__."|".__LINE__."  | New Request |".json_encode($request->all()));
-		$this->_msisdn =$request->phoneNumber;
-		$this->_input = trim($request->text); 
+		$this->_msisdn =$request->MSISDN;
+		$this->_input = trim($request->INPUT); 
 		$inputArray = explode("*", $this->_input);
 		$this->_input = $inputArray[sizeof($inputArray) - 1];
 		
-		$this->sessionID=$request->sessionId; // the ID is also not generated
+		$this->sessionID=$request->SESSIONID; // the ID is also not generated
 		//load this session or create it since msisdn and sessionID are set.
 		$this->loadSession($this->_msisdn, $this->sessionID);
-		//get all navigation values from session
+
+
+	//get all navigation values from session
 		$this->previousPage = $this->getSessionVar('previousPage');
 		$this->nextFunction = $this->getSessionVar('nextFunction');
 		$this->profileService = $profileService;
@@ -74,7 +76,7 @@ $model = UssdSessions::insertOrIgnore(
 	 */
 	public function loadSession($msisdn, $sessionID) {
 		//msisdn and sessionID concatenated will be the id of this session 
-		$concatsessionname = $sessionID . ' ' . $msisdn;
+		$concatsessionname = $sessionID . '_' . $msisdn;
 		//load session / create
 		$sessionID = md5($concatsessionname);
 		session_id($sessionID);
@@ -90,6 +92,15 @@ $model = UssdSessions::insertOrIgnore(
 					. ": 5 minutes");
 			$this->destroySession();
 		}
+
+		if (!isset($_SESSION['SESSION_STATE'])) {
+            $_SESSION['SESSION_STATE'] = "NEW"; //date('i');
+        }
+else
+{
+$_SESSION['SESSION_STATE'] = "EXISTING";
+}
+
 	}
 
 	/**

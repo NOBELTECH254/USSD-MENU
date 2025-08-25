@@ -48,7 +48,7 @@ class ProfileService
             'first_name' => $profile['firstname'],
             'last_name'  => $profile['lastname'],
             'display_name' =>$profile['displayName'],
-            'mobile_number'    => $profile['mobileNo'],
+            'mobile_number'    => $mobile_number,//$profile['mobileNo'],
             'hashed_pin'       => Hash::make($pin),
         ]);
 
@@ -73,6 +73,7 @@ class ProfileService
     }
     public function fetchFromMifos($mobile_number)
     {
+	    $mobile_number = "0".substr($mobile_number, -9);
 
             try {
                 $response = Http::withBasicAuth($this->username, $this->password)
@@ -84,7 +85,7 @@ class ProfileService
                     ]);
 
               
-   Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$mobile_number}|Response: {$response->body()} |Status :{$response->status()} ");
+   Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |fetchFromMifos| {$mobile_number}|Response: {$response->body()} |Status :{$response->status()} ");
 
             if ($response->status() !== 200) {
                 return ['success' => false, 'message' => 'API call failed'];

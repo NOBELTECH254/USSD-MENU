@@ -55,6 +55,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/menu-requests/{uuid}/show', [UssdSessionsController::class, 'menu_requests_show'])->name('menu-requests.show');
 
     Route::resource('response-templates', ResponseTemplatesController::class);
+Route::patch('response-templates/{uuid}/update-status', [ResponseTemplatesController::class, 'update_status'])
+    ->name('response-templates.update-status');
 
     Route::get('/charts', [ChartsController::class, 'index'])->name('charts');
 

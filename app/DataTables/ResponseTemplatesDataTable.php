@@ -25,7 +25,17 @@ class ResponseTemplatesDataTable extends DataTable
         })
         ->editColumn('updated_at', function (ResponseTemplates $model) {
             return $model->created_at->format('Y-m-d H:i:s');
+        })->addColumn('action', function ($model) {
+            return '
+                <a href="#"  data-id="'.$model->id.'" data-templatename="'.$model->name.'" data-template="'.$model->message.'" 
+                   class="text-info m-2 update-status">
+                   <span class="fas fa-pencil" aria-hidden="true"></span>
+                </a>
+
+                
+            ';
         })
+        ->rawColumns(['action'])
 
             ->setRowId('id');
     }
@@ -63,12 +73,12 @@ class ResponseTemplatesDataTable extends DataTable
             Column::make('message'),
             Column::computed('created_at')->title('date joined')->addClass('text-nowrap'),
             Column::make('updated_at')->title('Last date'),
-/*
+
             Column::computed('action')
                 ->addClass('text-end text-nowrap')
                 ->exportable(false)
                 ->printable(false)
-                ->width(60) */
+                ->width(60) 
         ];
     }
     /**

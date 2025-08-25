@@ -28,7 +28,7 @@ class ProcessPaymentRequest implements ShouldQueue
     public function __construct($data)
     {
         $this->data = $data;
-        Log::channel('ussd_logs')->info(" |ProcessPayments received data".json_encode($data));
+        Log::channel('ussd_log')->info(" |ProcessPayments received data".json_encode($data));
         $this->preLogString = "|ProcessPayments ".json_encode($data)."|";
 
     }
@@ -43,12 +43,12 @@ class ProcessPaymentRequest implements ShouldQueue
             //    \App\Jobs\ProcessMessages::ProcessPaymentRequest(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']]);
 //    public function payLoan($active_loans,$mifos_profile,$mobile_number,$$ )
             $pay_loan = $loanService->payLoan($active_loans,$mifos_profile,$mobile_number,$amount);
- Log::channel('ussd_logs')->info(" |ProcessPayments received data".json_encode($this->data)."|Response =>".json_encode($pay_loan));
+ Log::channel('ussd_log')->info(" |ProcessPayments received data".json_encode($this->data)."|Response =>".json_encode($pay_loan));
     } catch (Exception $e) {
         // If something went wrong, rollback the transaction
         DB::rollback();
         // Log the error message
-        Log::channel('ussd_logs')->error("$this->preLogString XXXXXX |".$e->getMessage());
+        Log::channel('ussd_log')->error("$this->preLogString XXXXXX |".$e->getMessage());
         // Return an error response to the user
         return ;
     }

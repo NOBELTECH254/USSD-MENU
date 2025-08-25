@@ -42,9 +42,12 @@ class LoanService
                 return ['success' => false, 'message' => 'API call failed'];
             }
     
-            $products = $response->json();
-
-            if (empty($products) ) {
+		$loanProducts = $response->json();
+		//		print_r($loanProducts);
+		//
+	    $active_loan_product_ids= explode(',', env('ACTIVE_LOAN_PRODUCTS', ''));
+$products = collect($loanProducts)->whereIn('id', $active_loan_product_ids)->values();
+if (empty($products) ) {
                 return ['success' => false, 'message' => 'No record found on Mifos'];
             }
 
@@ -94,7 +97,7 @@ return ['success' => true, 'message' => 'loan products exist' ,"loan_products"=>
             'verify' => true, // Enforce SSL certificate verification
         ])
         ->post("$this->baseUrl/loans", $payload);
-
+Log::channel('ussd_log')->info("Apply Loan".json_encode($payload)." => Response =>".$response->body());
         if ($response->successful()) {
             $message = message_template('loan-application-success', ['amount'=>$loan_amount,"payable" =>$totalPayable,"due_date"=>""
         ]);
@@ -126,12 +129,18 @@ $loan_id =$active_loans['loan_ids'][0];
                     'Content-Type' => 'application/json',
                 ])
                 ->post(env("MIFOS_PAYMENT_URL"), [
-                    [
+                    
                         "mobile"=>$mobile_number,
                         "loanId"=>$loan_id,
                         "amount"=>$amount
-                ]
-                ]);
+                
+		]);
+	   Log::channel('ussd_log')->info("payloan live|".env("MIFOS_PAYMENT_URL")." |Send request| ".json_encode([
+                        "mobile"=>$mobile_number,
+                        "loanId"=>$loan_id,
+                        "amount"=>$amount
+                ])."|=> Response =>".$response->body());
+
             if ($response->successful() && isset($response['resourceId'])) {
                 return "END Payment of KES {$amount} applied successfully to Loan #{$loan_id}";
             }
@@ -164,7 +173,7 @@ $loan_id =$active_loans['loan_ids'][0];
             $products = $response->json();
 
             if (empty($products) ) {
-                return ['success' => false, 'message' => 'No record found on Mifos'];
+                return ['success' => 201, 'message' => 'No record found on Mifos'];
             }
 
             $accounts = $response->json()['loanAccounts'] ?? [];
@@ -175,10 +184,47 @@ $loan_id =$active_loans['loan_ids'][0];
 
             $this->store_ussd(['mobile_number'=>$mifos_profile['mobileNo'],"menu"=>"FETCH-LOANS","request"=>"".$mifos_profile['mobileNo'],"response"=>json_encode($activeOrPending),"request_data"=>["profile_id"=>$mifos_profile['id']],"request_response"=>$activeOrPending]);
 
-            if(isset($activeOrPending))
+            if(isset($activeOrPending) and sizeOf($activeOrPending) > 0)
             return [
                 'success' => true,
                 'loanAccounts' => array_values($activeOrPending)
+            ];
+            else {
+                return [
+                    'success' => 201,
+                    'message'=>"no loan"
+                ];
+            }
+
+    } catch (\Exception $e) {
+        report($e);
+        Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Error: {$e->getMessage()} ");
+        return ['success' => false, 'message' => $e->getMessage()];
+    }
+    }
+ public function fetchAffordability($mifos_profile)
+    {
+
+            try {
+                $response = Http::withBasicAuth($this->username, $this->password)
+                    ->withOptions([
+                        'verify' => true, // Enforce SSL certificate verification
+                    ])
+                    ->get($this->baseUrl . '/datatables/Affordability/'.$mifos_profile['id'], []);
+   Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |Response: {$response->body()} |Status :{$response->status()} ");
+
+            if ($response->status() !== 200) {
+                return ['success' => false, 'message' => 'API call failed'];
+            }
+
+            $amount = $response->json();
+
+            if (empty($amount) ) {
+                return ['success' => false, 'message' => 'No record found on Mifos'];
+            }
+	    if(isset($amount[0]['amount']))
+	    	return [
+                'success' => true,'amount'=>$amount[0]['amount']
             ];
             else {
                 return [

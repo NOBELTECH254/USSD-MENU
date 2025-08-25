@@ -33,6 +33,9 @@ public function gateway() {
 
     if(empty($this->_msisdn ) || empty($this->sessionID))
 		{
+			echo $this->_msisdn;
+			echo $this->sessionID;
+			echo "here";
 			$this->sessionState = "END" ;
 			$this->displayText ="MENU Not loaded , please try later";
       $response =  $this->finalizeProcessing();
@@ -42,9 +45,11 @@ public function gateway() {
       return response($response , 200)->header('Content-Type', 'text/plain');
       
 		}
+    if($this->_input ==22)
+	    $functionToCall = null;
 
-		if ($functionToCall == '' || $functionToCall == null) { //if no next function defined, use startPage()
-			Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|Startpage call");
+					if ($functionToCall == '' || $functionToCall == null) { //if no next function defined, use startPage()
+Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|Startpage call");
 			$this->startPage();
 		}
 		else {
@@ -85,6 +90,9 @@ $profile = $this->profileService->checkProfile($this->_msisdn);
 */
 
 $mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
+
+  Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |XXXXXXXXX|".json_encode($mifos_result)."|{$this->_msisdn}|{$this->sessionID}|Return an empty array for mifos_profile so create a new registration request");
+
 //$mifos_result =  ['success'=>true,'profile'=>['name'=>'george']];
 if(!$mifos_result)
 {
@@ -128,11 +136,12 @@ if($mifos_profile)
   //we now create a profile 
   Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|Create Profile for user $this->_msisdn |Mifos Profile".json_encode($mifos_profile));
 
-  $mifos_result = $this->profileService->createProfile($mifos_profile,$this->_msisdn);
+//  $mifos_result = $this->profileService->createProfile($mifos_profile,$this->_msisdn);
   $this->displayText = "Welcome to Nobel Lending.\n Your account has been created and you shall receive your PIN Number shortly ";
-  $this->nextFunction = "END";
+  $this->displayText = "By continuing, you agree with nobellending Terms and Conditions https://nobellending.co.ke/kwamua-biashara-t&cs/ \n1. Accept \n2. Decline";
+  $this->nextFunction = "approveActivation";
   $this->previousPage = "";
-  $this->sessionState = "END";
+  $this->sessionState = "CON";
   return;
 }
 else {
@@ -159,7 +168,28 @@ $this->saveSessionVar("mifos_profile", $mifos_profile);
         $this->serviceDescription = "This is the first page of the experience!";
     }
   }
-
+	  function approveActivation()
+	  {
+		  if($this->_input ==1)
+		  {
+			  $mifos_result = $this->profileService->fetchFromMifos($this->_msisdn);
+$mifos_profile = $mifos_result['profile'] ?? null;
+  $mifos_result = $this->profileService->createProfile($mifos_profile,$this->_msisdn);
+		   $this->displayText = "Welcome to Nobel Lending.\n Your account has been created and you shall receive your PIN Number shortly ";
+  $this->nextFunction = "approveActivation";
+  $this->previousPage = "";
+  $this->sessionState = "END";
+  return;
+		  }
+	   if($this->_input ==2)
+    {
+      $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at 0726397276 ";
+      $this->nextFunction = "register";
+      $this->previousPage = "";
+      $this->sessionState = "END";
+      return;
+    }	
+	  }
   function register()
   {
     $this->displayText = "Welcome to Nobel Lending.\n 1. Register\n2. View Terms and Conditions \n3 Know more";
@@ -173,7 +203,7 @@ if(!$registration_steps)
     if($this->_input ==1)
 {
 
-  $this->displayText = "By continuing, your agree to share your data with Nobel Lending service \n1. Accept \n2. Decline";
+  $this->displayText = "By continuing, you agree with nobellending Terms and Conditions \n1. Accept \n2. Decline";
   $this->nextFunction = "register";
   $this->previousPage = "";
   $this->sessionState = "CON";
@@ -369,7 +399,7 @@ if(!$registration)
     return;
 }
 //we now save 
-$this->displayText = "Registration details \nName:".$registration['name']." \nID:".$registration['national_id']." \nYear of Birth:$year \n 1. Register\n2. Cancel Registration";
+$this->displayText = "Registration details \nName:".$registration['name']." \nID:".$registration['national_id']." \nYear of Birth:$year \n1. Register\n2. Cancel Registration";
 $this->nextFunction = "register";
 $this->previousPage = "";
 $this->sessionState = "CON";
@@ -385,6 +415,17 @@ case "registration_confirm":
   $this->nextFunction = "register";
   $this->previousPage = "";
   $this->sessionState = "END";
+ $registration  = $this->getSessionVar("register_".$this->_msisdn) ??null;
+  if(!in_array($this->_input,[1,2]))
+  {
+$this->displayText = "Registration details \nName:".$registration['name']." \nID:".$registration['national_id']." \nYear of Birth:$year \n1. Register\n2. Cancel Registration";
+$this->nextFunction = "register";
+$this->previousPage = "";
+$this->sessionState = "CON";
+$this->saveSessionVar("registration_steps", "registration_confirm");
+return;
+
+	}
   if($this->_input ==1)
 {
   $registration  = $this->getSessionVar("register_".$this->_msisdn) ??null;
@@ -519,8 +560,6 @@ switch($this->_input)
 
 $pending_active_loans = $this->loanService->fetchLoans($mifos_profile);
 Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|pending_active_loans".json_encode($pending_active_loans));
-print_r($pending_active_loans);
-die();
 if(empty($pending_active_loans))
 {
   $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
@@ -539,17 +578,16 @@ if($pending_active_loans['success'] ==false)
 return;
 
 }
-
-if($pending_active_loans['success'] ==true)
+if($pending_active_loans['success'] ===true)
 {
   //active loans
   $this->displayText = "You have active loans that should be cleared first before applying for another loan  ";
   $this->nextFunction = "END";
   $this->previousPage = "";
   $this->sessionState = "END";
-return ;
+  return ;
 }
-
+/*
 if($pending_active_loans['success'] ===201)
 {
   $this->displayText = "Thank you, please contact support to confirm your loan eligibilty ";
@@ -558,7 +596,7 @@ if($pending_active_loans['success'] ===201)
   $this->sessionState = "END";
 return;
 }
-
+*/
 
     $this->displayText = "By continuing, you agree with Nobel Lending service terms and conditions \n1. Accept \n2. Decline";
     $this->nextFunction = "approveLoanRequest";
@@ -636,8 +674,6 @@ function approveLoanRequest()
   case 1:
     //fetch loans
     $mifos_loans = $this->loanService->fetchLoanProducts();
-    print_r($mifos_loans);
-    die();
     if(empty( $mifos_loans))
     {
     $this->displayText = "Welcome to Nobel Lending.\n Please Contact customer care for activation of your account ";
@@ -658,7 +694,8 @@ function approveLoanRequest()
   return;
 }
 $loan_products = $mifos_loans['loan_products'];
-
+  $mifos_profile = $this->getSessionVar("mifos_profile")??null;
+$affordability = $this->loanService->fetchAffordability($mifos_profile);
 $this->saveSessionVar("loan_products",json_encode($loan_products));
 $menu ="";
 foreach($loan_products as $index => $loan)
@@ -745,10 +782,16 @@ return;
 }
 
         $loan_input = $this->_input - 1;
+$mifos_profile = $this->getSessionVar("mifos_profile")??null;
+$affordability = $this->loanService->fetchAffordability($mifos_profile);
+
 
         if (isset($loan_products[$loan_input])) { 
           $selected_loan = $loan_products[$loan_input];
-$this->displayText = "Apply {$selected_loan['name']} , Reply the Loan Amount between Kes ".number_format($selected_loan['minPrincipal'],0)." and ".number_format($selected_loan['maxPrincipal'],0);
+	  $max_amount = $selected_loan['minPrincipal'];
+	  if($affordability and $affordability['success']==true)
+        $max_amount = $affordability['amount'];
+	  $this->displayText = "Apply {$selected_loan['name']} , Reply the Loan Amount upto ".number_format($max_amount,0);
 
 $this->saveSessionVar("selected_loan",json_encode($selected_loan));
 $this->nextFunction = "loanAmountMenu";
@@ -773,7 +816,15 @@ function loanAmountMenu(){
 
   $selected_loan = json_decode($this->getSessionVar("selected_loan"),true) ??null;
 
-  $this->displayText = "Invalid Entry Apply {$selected_loan['name']} , Reply the Loan Amount between Kes ".number_format($selected_loan['minPrincipal'],0)." and ".number_format($selected_loan['maxPrincipal'],0);
+$mifos_profile = $this->getSessionVar("mifos_profile")??null;
+
+  $affordability = $this->loanService->fetchAffordability($mifos_profile);
+
+$max_amount = $selected_loan['minPrincipal'];
+if($affordability and $affordability['success']==true)
+	$max_amount = $affordability['amount'];
+
+  $this->displayText = "Invalid Entry Apply {$selected_loan['name']} , Reply the Loan Amount upto KES ".number_format($max_amount,0);
       $this->nextFunction = "loanAmountMenu";
   $this->sessionState = "CON";
 
@@ -791,18 +842,17 @@ if(!$profile)
 
 if(!ctype_digit($this->_input))
 {
-  $this->displayText = "Invalid Entry Apply {$selected_loan['name']} , Reply the Loan Amount between Kes ".number_format($selected_loan['minPrincipal'],0)." and ".number_format($selected_loan['maxPrincipal'],0);
+  $this->displayText = "Invalid Entry Apply {$selected_loan['name']} , Reply the Loan Amount upto KES ".number_format($max_amount,0);
   $this->nextFunction = "loanAmountMenu";
 $this->sessionState = "CON";
 }
 else {
   
 $loan_amount =(int)$this->_input;
-$min_amount =(int) $selected_loan['minPrincipal'];
-$max_amount = (int)$selected_loan['maxPrincipal'];
-if ($loan_amount < $min_amount || $loan_amount > $max_amount)
+//$max_amount = (int)$selected_loan['maxPrincipal'];
+if ( $loan_amount > $max_amount)
  {
-  $this->displayText = "Invalid Amount Apply {$selected_loan['name']} , Reply the Loan Amount between Kes ".number_format($selected_loan['minPrincipal'],0)." and ".number_format($selected_loan['maxPrincipal'],0);
+  $this->displayText = "Invalid Amount Apply {$selected_loan['name']} , Reply the Loan Amount upto KES ".number_format($max_amount,0);
       $this->nextFunction = "loanAmountMenu";
   $this->sessionState = "CON";
 }
@@ -964,7 +1014,6 @@ function loanPayment()
     $this->nextFunction = "loanPayment";
     $this->sessionState = "END";
     \App\Jobs\ProcessPaymentRequest::dispatchSync(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']]);
-
 $this->store_ussd(['mobile_number'=>$mifos_profile['mobileNo'],"menu"=>"PAY-LOAN","request"=>"Pay loan ".$mifos_profile['mobileNo']."  amount ". $active_loans['totalOutstanding'],"response"=>json_encode($active_loans),"request_data"=>['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']],"request_response"=>[]]);
     return;
   }
