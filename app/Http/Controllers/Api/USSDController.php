@@ -145,7 +145,7 @@ if($mifos_profile)
   return;
 }
 else {
-  $this->displayText = "Welcome to Nobel Lending.\n Please Contact customer care for activation of your account. Help? 0726397276";
+  $this->displayText = "Welcome to Nobel Lending.\n Please Contact customer care for activation of your account. Help? ".env("SUPPORT_NUMBER");
   $this->nextFunction = "END";
   $this->previousPage = "";
   $this->sessionState = "END";
@@ -183,7 +183,7 @@ $mifos_profile = $mifos_result['profile'] ?? null;
 		  }
 	   if($this->_input ==2)
     {
-      $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at 0726397276 ";
+      $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at ".env("SUPPORT_NUMBER");
       $this->nextFunction = "register";
       $this->previousPage = "";
       $this->sessionState = "END";
@@ -225,7 +225,7 @@ $this->SendMessage(0,$this->_msisdn ,$message,"TERMS-CONDITIONS");
 
 if($this->_input ==3)
 {
-  $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at 0726397276 ";
+  $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at ".env("SUPPORT_NUMBER");
   $this->nextFunction = "register";
   $this->previousPage = "";
   $this->sessionState = "END";
@@ -246,7 +246,7 @@ else {
   case "toc_approve":
     if($this->_input ==2)
     {
-      $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at 0726397276 ";
+      $this->displayText = "Go to https://nobellending.co.ke or contact our customer care at ".env("SUPPORT_NUMBER") ;
       $this->nextFunction = "register";
       $this->previousPage = "";
       $this->sessionState = "END";
@@ -411,7 +411,7 @@ $this->saveSessionVar("register_".$this->_msisdn,$registration);
 
 
 case "registration_confirm":
-  $this->displayText = "Registration end . Help ? 0726397276";
+  $this->displayText = "Registration end . Help ? ".env("SUPPORT_NUMBER");
   $this->nextFunction = "register";
   $this->previousPage = "";
   $this->sessionState = "END";
@@ -439,7 +439,7 @@ $has_fields  =true;
   }
   if($has_fields ==false)
   {
-    $this->displayText = "Registration end . Help ? 0726397276";
+    $this->displayText = "Registration end . Help ? ".env("SUPPORT_NUMBER");
     $this->nextFunction = "register";
     $this->previousPage = "";
     $this->sessionState = "END";
@@ -462,10 +462,10 @@ $has_fields  =true;
 
     if($model)
     {
-    $this->displayText = "Your account has been registered , you shall receive a call from our CS shortly  . Help ? 0726397276";
+    $this->displayText = "Your account has been registered , you shall receive a call from our CS shortly  . Help ? ".env("SUPPORT_NUMBER");
     }
     else {
-      $this->displayText = "Registration failed . Help ? 0726397276";
+      $this->displayText = "Registration failed . Help ? ".env("SUPPORT_NUMBER");
     }
     $this->nextFunction = "register";
     $this->previousPage = "";
@@ -493,7 +493,7 @@ break;
 switch($this->_input)
 {
   case 2:
-    $this->displayText = "Please contact the customer care number at  0726397276  ";
+    $this->displayText = "Please contact the customer care number at ".env("SUPPORT_NUMBER");
     $this->nextFunction = "startPage";
     $this->previousPage = "";
     $this->sessionState = "END";
@@ -562,7 +562,7 @@ $pending_active_loans = $this->loanService->fetchLoans($mifos_profile);
 Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|pending_active_loans".json_encode($pending_active_loans));
 if(empty($pending_active_loans))
 {
-  $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
+  $this->displayText = "Thank you, Your loan application was not successful, contact support  ".env("SUPPORT_NUMBER");
   $this->nextFunction = "END";
   $this->previousPage = "";
   $this->sessionState = "END";
@@ -571,7 +571,7 @@ return;
 
 if($pending_active_loans['success'] ==false)
 {
-  $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
+  $this->displayText = "Thank you, Your loan application was not successful, contact support  ".env("SUPPORT_NUMBER");
   $this->nextFunction = "END";
   $this->previousPage = "";
   $this->sessionState = "END";
@@ -651,7 +651,7 @@ return;
         $this->nextFunction = "loanPayment";
         break;
       case 4:
-        $this->displayText = "Our Contact numbers are 0726397276 ";
+        $this->displayText = "Our Contact numbers are ".env("SUPPORT_NUMBER");
         $this->sessionState = "END";
         break;
       case 0:
@@ -918,12 +918,12 @@ $mifos_profile = $this->getSessionVar("mifos_profile")??null;
 $apply_loan = $this->loanService->applyloan($loan_amount,  $selected_loan,$interest,$totalPayable,$profile ,$mifos_profile);
 if(empty($apply_loan))
 {
-  $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
+  $this->displayText = "Thank you, Your loan application was not successful, contact support  ".env("SUPPORT_NUMBER");
 return;
 }
 if($apply_loan['success'] ==false)
 {
-  $this->displayText = "Thank you, Your loan application was not successful, contact support  ";
+  $this->displayText = "Thank you, Your loan application was not successful, contact support  ".env("SUPPORT_NUMBER");
 return;
 }
 
@@ -945,6 +945,7 @@ case 2:
 function accountMenu()
 {
   $mifos_profile = $this->getSessionVar("mifos_profile")??null;
+$profile = $this->getSessionVar("profile")??null;
   $this->displayText = "My Account, Select \n1. View Loan Balance \n2. View Repayment History \n0. Home";
   $this->nextFunction = "accountMenu";
   $this->sessionState = "CON";
@@ -992,6 +993,9 @@ function accountMenu()
     $this->displayText = "You shall receive your loan repayment history shortly";
     $this->nextFunction = "accountMenu";
     $this->sessionState = "END";
+    $active_loans = $this->loanService->loanSummary($mifos_profile,$profile);
+        
+    Log::channel('ussd_log')->info(__METHOD__."|".__LINE__." |{$this->_msisdn}|{$this->sessionID}|active_loans".json_encode($active_loans));
     return;
   }
   if($this->_input ==0)
@@ -1063,7 +1067,7 @@ function loanPayment_partial()
 $this->store_ussd(['mobile_number'=>$mifos_profile['mobileNo'],"menu"=>"PAY-LOAN","request"=>"Pay loan ".$mifos_profile['mobileNo']."  amount ". $active_loans['totalOutstanding'],"response"=>json_encode($active_loans),"request_data"=>['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']],"request_response"=>[]]);
 
 //$pay_loan = $this->loanService->payLoan($active_loans,$mifos_profile,$this->_msisdn,$active_loans['totalOutstanding']);
-\App\Jobs\ProcessPaymentRequest::dispatch(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$active_loans['totalOutstanding']]);
+\App\Jobs\ProcessPaymentRequest::dispatch(['active_loans'=>$active_loans,'mifos_profile'=>$mifos_profile,'mobile_number'=>$this->_msisdn,'amount'=>$this->_input]);
 $this->displayText = "Please enter your mPesa PIN to clear the Loan";
 $this->nextFunction = "loanPayment";
 $this->sessionState = "END";

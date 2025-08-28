@@ -73,7 +73,7 @@ class ProfileService
     }
     public function fetchFromMifos($mobile_number)
     {
-	    $mobile_number = "0".substr($mobile_number, -9);
+	    $mobile_number = substr($mobile_number, -9);
 
             try {
                 $response = Http::withBasicAuth($this->username, $this->password)
@@ -81,7 +81,7 @@ class ProfileService
                         'verify' => true, // Enforce SSL certificate verification
                     ])
                     ->get($this->baseUrl . '/clients', [
-                        'sqlSearch' => "c.mobile_no={$mobile_number}"
+                        'sqlSearch' => "c.mobile_no like '%{$mobile_number}%'"
                     ]);
 
               
@@ -98,10 +98,11 @@ class ProfileService
             }
 $profile = $data['pageItems'][0]??null;
 
-// Validate mobile number
+/* Validate mobile number
 if (empty($profile['mobileNo']) || $profile['mobileNo'] !== $mobile_number) {
     return ['success' => false, 'message' => 'the returned mobile number is not valid please needs to be registered'];
 }
+*/
 return ['success' => true, 'message' => 'profile matched to '.$mobile_number ,"profile"=>$profile];
     } catch (\Exception $e) {
         report($e);
